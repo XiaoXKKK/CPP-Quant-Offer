@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props {
+  questions: CollectionEntry<'topics'>['data']['questions'];
+}
+const { questions } = Astro.props;
+---
+
+<div class="question-list">
+  {['L1', 'L2', 'L3'].map((level) => (
+    <section class="question-level" aria-label={`${level} 面试题`}>
+      <h3>
+        {level}
+        <span>
+          {level === 'L1'
+            ? '基础 · 建立准确表达'
+            : level === 'L2'
+              ? '深入 · 解释机制与边界'
+              : 'Quant / Low-Latency · 做出工程判断'}
+        </span>
+      </h3>
+      {questions
+        .filter((q) => q.level === level)
+        .map((q) => (
+          <article class="question" id={q.id}>
+            <h4>{q.prompt}</h4>
+            <p class="source-label">
+              {q.source.kind === 'derived' ? '岗位知识推导 · 非公司真题' : '公开面经'}
+              {q.companies.length > 0 && ` · ${q.companies.join(' / ')}`}
+            </p>
+            <label class="draft-label" for={`draft-${q.id}`}>
+              我的回答
+            </label>
+            <textarea
+              id={`draft-${q.id}`}
+              data-draft={q.id}
+              rows="3"
+              maxlength="100000"
+              placeholder="先用自己的话回答，再对照参考要点…"
+            ></textarea>
+            <details class="answer">
+              <summary>查看参考答案与评分要点</summary>
+              <p>{q.answer}</p>
+              <ul>
+                {q.rubric.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+              {q.source.kind === 'public-interview' ? (
+                <p class="source-note">
+                  <a href={q.source.url} target="_blank" rel="noreferrer">
+                    {q.source.title}
+                  </a>{' '}
+                  · 访问 {q.source.accessed} · 发布 {q.source.published || '未知'} · 面试{' '}
+                  {q.source.interviewDate || '未知'}
+                  <br />
+                  {q.source.note}
+                </p>
+              ) : (
+                <p class="source-note">{q.source.rationale}</p>
+              )}
+            </details>
+          </article>
+        ))}
+    </section>
+  ))}
+</div>

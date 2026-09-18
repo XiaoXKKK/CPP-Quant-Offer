@@ -1,0 +1,143 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Questions from '../../components/Questions.astro';
+import CodeLab from '../../components/CodeLab.astro';
+import { publishedTopics } from '../../lib/content';
+import { categories } from '../../data/taxonomy.mjs';
+export async function getStaticPaths() {
+  return (await publishedTopics()).map((topic) => ({
+    params: { id: topic.data.id },
+    props: { topic },
+  }));
+}
+interface Props {
+  topic: CollectionEntry<'topics'>;
+}
+const { topic } = Astro.props;
+const { data } = topic;
+const { Content, headings } = await render(topic);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const all = await publishedTopics();
+---
+
+<Layout title={data.title} description={data.description}>
+  <div class="article-layout">
+    <div class="article-main">
+      <header class="article-header">
+        <a class="breadcrumb" href={`${base}/?category=${data.category}`}>
+          专题索引 / {categories.find((c) => c.id === data.category)?.name}
+        </a>
+        <div class="article-meta">
+          <span class="level-badge">
+            {data.difficulty}{' '}
+            {data.difficulty === 'L1' ? '基础' : data.difficulty === 'L2' ? '深入' : '工程进阶'}
+          </span>
+          <span>{data.standard}</span>
+          <span>{data.estimatedMinutes} 分钟</span>
+          <span>校核 {data.reviewed} UTC</span>
+        </div>
+        <h1>{data.title}</h1>
+        <p class="intro">{data.description}</p>
+        <div class="article-actions">
+          <button data-progress="read" data-topic={data.id} aria-pressed="false">
+            标记已读
+          </button>
+          <button data-progress="saved" data-topic={data.id} aria-pressed="false">
+            ☆ 收藏
+          </button>
+          <a href="#code-lab">代码实验 ↓</a>
+          <a href="#question-bank">面试自测 ↓</a>
+        </div>
+        <p class="prerequisites">
+          <strong>开始之前</strong> {data.prerequisites.join(' · ')}
+        </p>
+        <div class="tag-list">
+          {data.tags.map((tag) => (
+            <a href={`${base}/?tag=${tag}`}>#{tag}</a>
+          ))}
+        </div>
+      </header>
+      <article class="prose">
+        <Content />
+      </article>
+      <section id="question-bank" aria-label="分层面试题">
+        <Questions questions={data.questions} />
+      </section>
+      <CodeLab
+        id={data.id}
+        file={data.demo.file}
+        exercise={data.demo.exercise}
+        platform={data.demo.platform}
+      />
+      <section class="references" id="references">
+        <h2>参考资料与适用边界</h2>
+        <p>题库来源单独记录；下列资料用于技术论据，不代表公司面经。在线标准草案和实现会更新。</p>
+        <ol>
+          {data.references.map((ref) => (
+            <li>
+              <a href={ref.url} target="_blank" rel="noreferrer">
+                {ref.title} ↗
+              </a>
+              <span>
+                {ref.kind} · 访问 {ref.accessed} UTC
+              </span>
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section class="related">
+        <h2>继续阅读</h2>
+        {data.related.map((id) => (
+          <a href={`${base}/topics/${id}/`}>{all.find((t) => t.data.id === id)?.data.title} ↗</a>
+        ))}
+      </section>
+    </div>
+    <aside class="toc" aria-label="本页目录">
+      <p class="nav-label">本页目录</p>
+      <nav>
+        {headings
+          .filter((h) => h.depth === 2)
+          .map((h, i) => (
+            <a href={`#${h.slug}`}>
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              {h.text}
+            </a>
+          ))}
+        <a href="#code-lab">
+          <span>↳</span>在线代码实验
+        </a>
+        <a href="#references">
+          <span>↳</span>参考资料
+        </a>
+      </nav>
+      <p class="toc-note">
+        先独立作答
+        <br />
+        再核对参考要点
+      </p>
+    </aside>
+  </div>
+  <script>
+    const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.toc a');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            tocLinks.forEach((link) => {
+              const active = decodeURIComponent(link.hash.slice(1)) === entry.target.id;
+              link.classList.toggle('active', active);
+              if (active) link.setAttribute('aria-current', 'location');
+              else link.removeAttribute('aria-current');
+            });
+          }
+        }
+      },
+      { rootMargin: '-10% 0px -75% 0px' },
+    );
+    document
+      .querySelectorAll('.prose h2, #code-lab, #references')
+      .forEach((el) => observer.observe(el));
+  </script>
+</Layout>

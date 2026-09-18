@@ -1,0 +1,53 @@
+{
+  "name": "cpp-quant-offer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^22.22.3 || ^24.16.0 || >=26.3.0"
+  },
+  "overrides": {
+    "smol-toml": "^1.8.0"
+  },
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "npm run validate && astro build && node scripts/check-built-links.mjs",
+    "preview": "astro preview --host 127.0.0.1",
+    "check": "astro check",
+    "validate": "node scripts/validate-content.mjs",
+    "schema": "node scripts/export-schema.mjs",
+    "lint": "eslint . && markdownlint-cli2 && prettier --check .",
+    "format": "prettier --write .",
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "playwright test",
+    "test:cpp": "python scripts/test_cpp.py",
+    "verify": "npm run check && npm run lint && npm test && npm run build"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/mdx": "^8.0.1",
+    "astro": "^7.3.3",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.13.5",
+    "cheerio": "^1.2.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-astro": "^3.2.1",
+    "github-slugger": "^2.0.0",
+    "globals": "^17.12.0",
+    "gray-matter": "^4.0.3",
+    "markdownlint-cli2": "^0.23.2",
+    "prettier": "^3.9.8",
+    "prettier-plugin-astro": "^1.0.1",
+    "remark-mdx": "^3.1.1",
+    "remark-parse": "^11.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0"
+  }
+}

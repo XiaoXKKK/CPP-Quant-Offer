@@ -1,0 +1,353 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 4
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "cpp",
+        "concurrency",
+        "systems",
+        "network",
+        "performance",
+        "trading",
+        "design"
+      ]
+    },
+    "areas": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "minItems": 2,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "L1",
+        "L2",
+        "L3"
+      ]
+    },
+    "roles": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "C++ Developer",
+          "Quant Developer",
+          "Low-Latency C++ Developer",
+          "Trading Infrastructure Engineer"
+        ]
+      }
+    },
+    "companyTypes": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "高频交易",
+          "量化私募",
+          "Trading Firm"
+        ]
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published"
+      ]
+    },
+    "updated": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+    },
+    "reviewed": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+    },
+    "standard": {
+      "type": "string",
+      "enum": [
+        "C++17",
+        "C++20",
+        "C++23"
+      ]
+    },
+    "estimatedMinutes": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 180
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 2
+      }
+    },
+    "related": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
+    "demo": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^examples\\/[a-z0-9-]+\\.cpp$"
+        },
+        "platform": {
+          "type": "string",
+          "enum": [
+            "portable",
+            "linux"
+          ]
+        },
+        "exercise": {
+          "type": "string",
+          "minLength": 20
+        }
+      },
+      "required": [
+        "file",
+        "platform",
+        "exercise"
+      ],
+      "additionalProperties": false
+    },
+    "references": {
+      "minItems": 2,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "accessed": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "manual",
+              "protocol",
+              "implementation"
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "url",
+          "accessed",
+          "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "questions": {
+      "minItems": 15,
+      "maxItems": 30,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "L1",
+              "L2",
+              "L3"
+            ]
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 8
+          },
+          "answer": {
+            "type": "string",
+            "minLength": 30
+          },
+          "rubric": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          },
+          "source": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "derived"
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 12
+                  }
+                },
+                "required": [
+                  "kind",
+                  "rationale"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "public-interview"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 3
+                  },
+                  "accessed": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "published": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "interviewDate": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "date",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 12
+                  }
+                },
+                "required": [
+                  "kind",
+                  "url",
+                  "title",
+                  "accessed",
+                  "published",
+                  "interviewDate",
+                  "note"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "companies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2
+            }
+          }
+        },
+        "required": [
+          "id",
+          "level",
+          "prompt",
+          "answer",
+          "rubric",
+          "source",
+          "companies"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "title",
+    "description",
+    "category",
+    "areas",
+    "tags",
+    "difficulty",
+    "roles",
+    "companyTypes",
+    "status",
+    "updated",
+    "reviewed",
+    "standard",
+    "estimatedMinutes",
+    "prerequisites",
+    "related",
+    "demo",
+    "references",
+    "questions"
+  ],
+  "additionalProperties": false,
+  "$id": "https://xiaoxkkk.github.io/CPP-Quant-Offer/schemas/topic.schema.json",
+  "description": "Editor schema. Cross-field, references, dates and semantic checks also run via npm run validate."
+}

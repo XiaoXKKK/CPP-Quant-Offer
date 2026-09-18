@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Layout title="页面未找到">
+  <div class="page-heading">
+    <p class="eyebrow">404 / NOT FOUND</p>
+    <h1>这个专题还不在这里。</h1>
+    <p>链接可能已变更，请从专题索引或知识地图继续。</p>
+    <a class="primary-button" href={`${base}/`}>
+      返回专题索引
+    </a>
+  </div>
+</Layout>

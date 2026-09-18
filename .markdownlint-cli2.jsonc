@@ -1,0 +1,12 @@
+{
+  "globs": [
+    "**/*.md",
+    "!node_modules/**",
+    "!dist/**",
+    "!.astro/**",
+    "!test-results/**",
+    "!playwright-report/**",
+    "!.artifacts/**",
+  ],
+  "config": { "MD013": false, "MD033": false, "MD024": { "siblings_only": true } },
+}

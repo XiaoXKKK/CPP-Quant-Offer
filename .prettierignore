@@ -1,0 +1,9 @@
+node_modules
+dist
+.astro
+.cpp-build
+test-results
+playwright-report
+package-lock.json
+.artifacts
+schemas/*.json

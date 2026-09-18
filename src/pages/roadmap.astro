@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { categories } from '../data/taxonomy.mjs';
+import { publishedTopics } from '../lib/content';
+const topics = await publishedTopics();
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<Layout title="知识地图" active="roadmap">
+  <div class="page-heading">
+    <p class="eyebrow">
+      CURRICULUM <span>/ 02</span>
+    </p>
+    <h1>
+      从语言，到交易系统<span class="heading-dot">.</span>
+    </h1>
+    <p class="intro">7 个领域，21 个知识方向。已发布内容可以阅读，其余保持明确的计划状态。</p>
+  </div>
+  <div class="learning-path">
+    <strong>建议主线</strong>
+    <p>C++ 对象与内存 → 并发正确性 → Linux / 网络 → 性能测量 → 行情与交易基础设施</p>
+  </div>
+  <div class="roadmap">
+    {categories.map((category, index) => (
+      <section>
+        <div class="roadmap-title">
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <h2>{category.name}</h2>
+        </div>
+        <ul>
+          {category.areas.map((area) => {
+            const available = topics.filter((t) => t.data.areas.includes(area));
+            return (
+              <li>
+                <div>
+                  <strong>{area}</strong>
+                  <span class="plan-status">
+                    {available.length ? `${available.length} 篇已发布` : '待建设'}
+                  </span>
+                </div>
+                {available.length > 0 && (
+                  <ul>
+                    {available.map((t) => (
+                      <li>
+                        <a href={`${base}/topics/${t.data.id}/`}>{t.data.title} ↗</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))}
+  </div>
+  <section class="prose next-batches">
+    <h2>后续按依赖分批发布</h2>
+    <ol>
+      <li>
+        <strong>语言基线：</strong>RAII / move、对象生命周期、vector 失效规则、模板与
+        concepts、链接与 ABI。
+      </li>
+      <li>
+        <strong>并发基线：</strong>mutex / condition_variable、SPSC 专题、ABA 与回收、NUMA /
+        first-touch。
+      </li>
+      <li>
+        <strong>网络与观测：</strong>TCP 分帧、UDP multicast、io_uring、perf、benchmark 与尾延迟。
+      </li>
+      <li>
+        <strong>交易链路：</strong>feed handler、快照恢复、matching engine、OMS / risk、系统设计。
+      </li>
+      <li>
+        <strong>编码专项：</strong>LRU、内存池、ring buffer、price ladder、定时器和事件回放。
+      </li>
+    </ol>
+    <p>
+      每批 3–5 篇。每篇先确定论据、demo 与测试，再写 15–30 道分层题；通过技术审查与页面检查后发布。
+    </p>
+  </section>
+</Layout>

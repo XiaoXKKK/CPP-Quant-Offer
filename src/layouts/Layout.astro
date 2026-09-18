@@ -1,0 +1,127 @@
+---
+import '../styles/global.css';
+import { categories } from '../data/taxonomy.mjs';
+import { publishedTopics } from '../lib/content';
+interface Props {
+  title: string;
+  description?: string;
+  active?: string;
+}
+const {
+  title,
+  description = 'C++ / Quant Developer / Low-Latency Engineer 面试与工程知识库',
+  active = 'library',
+} = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const topics = await publishedTopics();
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <title>{title} · CPP-Quant-Offer</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      跳到正文
+    </a>
+    <header class="topbar">
+      <a class="brand" href={`${base}/`} aria-label="CPP Quant Offer 首页">
+        <span class="brand-symbol">
+          C<span>++</span>
+        </span>
+        <span>
+          CPP<span class="brand-divider"> / </span>Quant Offer
+        </span>
+      </a>
+      <span class="edition">
+        ENGINEERING FIELD NOTES <span>·</span> 2026
+      </span>
+      <a
+        class="github-link"
+        href="https://github.com/XiaoXKKK/CPP-Quant-Offer"
+        target="_blank"
+        rel="noreferrer"
+      >
+        GitHub ↗
+      </a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="sidebar">
+        目录
+      </button>
+    </header>
+    <div class="shell">
+      <aside class="sidebar" id="sidebar">
+        <nav aria-label="主导航" class="primary-nav">
+          <a href={`${base}/`} aria-current={active === 'library' ? 'page' : undefined}>
+            <span>01</span> 专题索引
+          </a>
+          <a href={`${base}/roadmap/`} aria-current={active === 'roadmap' ? 'page' : undefined}>
+            <span>02</span> 知识地图
+          </a>
+          <a href={`${base}/interview/`} aria-current={active === 'interview' ? 'page' : undefined}>
+            <span>03</span> 随机面试 <span class="nav-arrow">↗</span>
+          </a>
+          <a href={`${base}/guide/`} aria-current={active === 'guide' ? 'page' : undefined}>
+            <span>04</span> 使用与贡献
+          </a>
+        </nav>
+        <p class="nav-label">
+          知识领域 <span>TOPICS</span>
+        </p>
+        <nav class="category-nav" aria-label="知识分类">
+          {categories.map((category) => (
+            <a href={`${base}/?category=${category.id}`}>
+              <span>{category.name}</span>
+              <span class="count">
+                {topics
+                  .filter((t) => t.data.category === category.id)
+                  .length.toString()
+                  .padStart(2, '0')}
+              </span>
+            </a>
+          ))}
+        </nav>
+        <div class="sidebar-note">
+          <span class="note-rule"></span>
+          <strong>理解机制，再讨论延迟。</strong>
+          <p>
+            短答、原理、可运行代码、分层追问。
+            <br />
+            每个结论都保留适用边界。
+          </p>
+        </div>
+        <div class="storage-tools">
+          <p>学习记录 · 仅保存在此浏览器</p>
+          <button type="button" id="export-progress">
+            导出备份
+          </button>
+          <button type="button" id="import-trigger">
+            导入备份
+          </button>
+          <input id="import-progress" type="file" accept="application/json" hidden />
+        </div>
+      </aside>
+      <main id="main" tabindex="-1">
+        <slot />
+      </main>
+    </div>
+    <footer class="footer">
+      <span>
+        CPP-Quant-Offer <span class="muted">/ 长期维护的工程知识库</span>
+      </span>
+      <span>先证明正确，再测量性能。</span>
+    </footer>
+    <p id="global-status" class="toast" role="status" aria-live="polite" hidden></p>
+    <noscript>
+      <p class="noscript">
+        正文和参考答案可以直接阅读。搜索、收藏、作答记录与在线代码练习需要 JavaScript。
+      </p>
+    </noscript>
+    <script src="../scripts/global.ts"></script>
+  </body>
+</html>

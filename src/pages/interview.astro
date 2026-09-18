@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { publishedTopics, safeJson } from '../lib/content';
+import { roles, companyTypes } from '../data/taxonomy.mjs';
+const topics = await publishedTopics();
+---
+
+<Layout title="随机面试" active="interview">
+  <div class="page-heading">
+    <p class="eyebrow">
+      INTERVIEW PRACTICE <span>/ 03</span>
+    </p>
+    <h1>
+      先想，再看答案<span class="heading-dot">.</span>
+    </h1>
+    <p class="intro">按专题与层级组一轮题目。不重复抽取，答案默认隐藏。</p>
+  </div>
+  <div class="interview-controls filters">
+    <label>
+      专题
+      <select id="interview-topic">
+        <option value="">全部专题</option>
+        {topics.map((t) => (
+          <option value={t.data.id}>{t.data.title}</option>
+        ))}
+      </select>
+    </label>
+    <label>
+      层级
+      <select id="interview-level">
+        <option value="">全部层级</option>
+        <option>L1</option>
+        <option>L2</option>
+        <option>L3</option>
+      </select>
+    </label>
+    <label>
+      岗位
+      <select id="interview-role">
+        <option value="">全部岗位</option>
+        {roles.map((r) => (
+          <option>{r}</option>
+        ))}
+      </select>
+    </label>
+    <label>
+      公司类型
+      <select id="interview-company-type">
+        <option value="">全部类型</option>
+        {companyTypes.map((c) => (
+          <option>{c}</option>
+        ))}
+      </select>
+    </label>
+  </div>
+  <p class="source-note">
+    本轮题库为岗位知识推导题，不是已核实的公司真题。切换筛选会重置本轮，已写草稿保留。
+  </p>
+  <div class="interview-toolbar">
+    <button class="primary-button" id="start-interview">
+      开始 / 重新抽题
+    </button>
+    <p id="interview-status" role="status">
+      共 {topics.reduce((n, t) => n + t.data.questions.length, 0)} 道题，选择范围后开始。
+    </p>
+  </div>
+  <section id="interview-card" class="interview-card" aria-live="polite" hidden>
+    <div class="topic-kicker">
+      <span id="question-level"></span>
+      <a id="question-topic"></a>
+    </div>
+    <h2 id="question-prompt" tabindex="-1"></h2>
+    <label for="interview-draft">
+      我的回答 <span class="muted">· 自动保存在此浏览器</span>
+    </label>
+    <textarea
+      id="interview-draft"
+      rows="7"
+      maxlength="100000"
+      placeholder="先给 30 秒短答，再补充适用条件、反例和验证方法。"
+    ></textarea>
+    <details id="interview-answer" class="answer">
+      <summary>查看参考答案与评分要点</summary>
+      <p id="question-answer"></p>
+      <ul id="question-rubric"></ul>
+      <p id="question-source" class="source-note"></p>
+    </details>
+    <div class="interview-bottom">
+      <p class="muted">自查：概念准确？有边界？能给验证方法？</p>
+      <button id="next-question" class="primary-button">
+        下一题 →
+      </button>
+    </div>
+  </section>
+  <div id="interview-intro" class="practice-note">
+    <span>01 / 独立组织语言</span>
+    <span>02 / 说明前提与反例</span>
+    <span>03 / 对照要点补缺口</span>
+  </div>
+  <script
+    type="application/json"
+    id="interview-data"
+    set:html={safeJson(topics.map((t) => t.data))}
+  ></script>
+  <script src="../scripts/interview.ts"></script>
+</Layout>

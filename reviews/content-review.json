@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "kind": "self-review",
+  "reviewer": "Implementation agent; no independent reviewer claimed",
+  "reviewedAt": "2026-09-18",
+  "verdict": "pass",
+  "scope": "Five tutorials, 75 derived questions, five C++ demos; technical and rendering review",
+  "report": "docs/REVIEW.md",
+  "checks": [
+    "language and platform boundaries",
+    "dual SPSC synchronization chains",
+    "order-book invariants and complexity",
+    "no fabricated company provenance",
+    "desktop/mobile interaction tests",
+    "GCC and ASan/UBSan tests"
+  ],
+  "files": {
+    "content/topics/concurrency/cpp-memory-model.md": "129f69e2f94b38fad13f39a444921b2cedf24e328102926d618808f5157a1b1e",
+    "content/topics/concurrency/shared-mutex.md": "071ef3fa7a8718c6d0c9ef27cd075eadb443918bc20044a3fee8064db5546be9",
+    "content/topics/network/epoll-lt-et.md": "10506f28d90003c0cdf8ad0d343f85ea016162f541a2c847664bd2f32b0357bf",
+    "content/topics/performance/cpu-cache-false-sharing.md": "a1e762765804650815358495c435d135551ebe9d6cf1f817f1e9487440d62eac",
+    "content/topics/trading/order-book.md": "4d29c15b8df14849b9e5b2b593aa528139293c95d4b00a75fc08f41ee77a8fff",
+    "examples/cpp-memory-model.cpp": "19a0c397f230483ffdf56621b7a05b823e68dab24c95dde388ced134a8e04914",
+    "examples/cpu-cache-false-sharing.cpp": "3dfdf467662f57357797b5760e8acc04f85eeba080322710ec6394dd7fbdcb0b",
+    "examples/epoll-lt-et.cpp": "f802cd3f19df56e434c15ae6000ec2e4bd2a6765fe737b6184180e1fdf36a394",
+    "examples/order-book.cpp": "64e4ec57ce81a3f3efafc8afc2f40b420845558dd5f987b699dda98ccfb85aa3",
+    "examples/shared-mutex.cpp": "c08f40bce2afcb3db68ef6b2ddd699723b83c85da9e284f619f7763b5005e9d9"
+  }
+}

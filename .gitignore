@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.cpp-build/
+playwright-report/
+test-results/
+.env*
+!.env.example
+.DS_Store
+*.log
+.artifacts/

@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="使用与贡献" active="guide">
+  <div class="page-heading">
+    <p class="eyebrow">
+      READ · PRACTICE · VERIFY <span>/ 04</span>
+    </p>
+    <h1>
+      把知识变成可验证的判断<span class="heading-dot">.</span>
+    </h1>
+  </div>
+  <article class="prose guide-content">
+    <h2>一次专题学习</h2>
+    <ol>
+      <li>读 30 秒回答，检查前置知识。</li>
+      <li>用原理和实现解释这段回答，找出适用条件。</li>
+      <li>运行 C++ 示例，改变一个变量，预测结果后验证。</li>
+      <li>独立回答分层问题，再展开参考要点。</li>
+      <li>完成后手动标记已读；需要复习的专题加入收藏。</li>
+    </ol>
+    <h2>搜索与题目来源</h2>
+    <p>
+      搜索覆盖标题、正文、标签、岗位、问题和参考答案，支持中文和英文、多关键词 AND
+      匹配。分类、难度、标签和岗位筛选可以组合。专题难度是阅读门槛；每篇题库都包含 L1、L2、L3。
+    </p>
+    <p>
+      公司类型仅表示岗位适用性。具体公司标签只用于有公开来源的面经；必须记录
+      URL、访问日期、原文日期（未知可留空）和上下文。首批 75 题全部是知识推导题。
+    </p>
+    <h2>代码练习</h2>
+    <p>
+      每篇文章的代码来自同一个经过测试的 C++ 文件。在代码实验区编辑后，点击按钮才会将代码发送到
+      Compiler Explorer。远程服务可能限制系统调用、超时或不可达；复制到本地 Linux / WSL
+      运行是完整备用路径。共享编译环境的计时不能作为性能结论。
+    </p>
+    <h2>本地记录与备份</h2>
+    <p>
+      已读、收藏、作答草稿和代码编辑保存在当前浏览器的
+      localStorage，不会发送到本站服务器，也不会自动跨设备同步。清除浏览器数据后记录会消失。使用侧栏导出
+      JSON，在另一设备导入即可合并；发生冲突时保留当前设备的草稿。隐私模式或存储配额限制下会提示临时保存。
+    </p>
+    <h2>贡献一个专题</h2>
+    <p>
+      内容使用 Markdown，特殊交互才使用经过代码审查的
+      MDX。先提交窄范围选题与主要参考资料，再提供可运行 demo
+      和有解释的失败案例。不要按文章数量或行数达标；标准是读者能否复述、推导、实现、解释边界。
+    </p>
+    <ul>
+      <li>
+        <a href="https://github.com/XiaoXKKK/CPP-Quant-Offer/blob/main/CONTRIBUTING.md">
+          Contributor guide ↗
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/XiaoXKKK/CPP-Quant-Offer/blob/main/docs/CONTENT_STANDARD.md">
+          内容质量标准 ↗
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/XiaoXKKK/CPP-Quant-Offer/blob/main/docs/ARCHITECTURE.md">
+          信息架构与技术决策 ↗
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/XiaoXKKK/CPP-Quant-Offer/blob/main/docs/REFERENCE_ANALYSIS.md">
+          参考项目分析 ↗
+        </a>
+      </li>
+    </ul>
+    <h2>发布门槛</h2>
+    <p>
+      metadata、必需章节、内部链接、题库结构、C++ 代码块、格式、类型和交互测试必须通过。C++ 示例在
+      Linux
+      上编译运行并检查边界，内容审查区分标准保证与平台实现。自动检查不能证明内存模型、性能结论或公开面经的真实性，仍需人工核对论据。
+    </p>
+  </article>
+</Layout>
