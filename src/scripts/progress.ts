@@ -33,12 +33,15 @@ export function loadProgress(): Progress {
 }
 export function saveProgress(progress: Progress) {
   memory = progress;
+  let saved = true;
   try {
     localStorage.setItem(key, JSON.stringify(progress));
   } catch {
+    saved = false;
     notify('浏览器未能保存记录；本页临时保留，请导出备份。');
   }
   document.dispatchEvent(new Event('progress-changed'));
+  return saved;
 }
 window.addEventListener('storage', (event) => {
   if (event.key !== key) return;

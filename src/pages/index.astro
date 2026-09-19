@@ -2,12 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import { readFileSync } from 'node:fs';
 import { publishedTopics, safeJson } from '../lib/content';
-import { categories, roles, companyTypes } from '../data/taxonomy.mjs';
+import { categories } from '../data/taxonomy.mjs';
 const topics = await publishedTopics();
 const tags = [...new Set(topics.flatMap((t) => t.data.tags))].sort();
-const companies = [
-  ...new Set(topics.flatMap((t) => t.data.questions.flatMap((q) => q.companies))),
-].sort();
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
@@ -77,39 +74,6 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <option value="saved">已收藏</option>
           </select>
         </label>
-        <details class="more-filters">
-          <summary>岗位 / 公司</summary>
-          <div>
-            <label>
-              岗位
-              <select id="role" name="role">
-                <option value="">全部岗位</option>
-                {roles.map((role) => (
-                  <option>{role}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              公司类型
-              <select id="companyType" name="companyType">
-                <option value="">全部类型</option>
-                {companyTypes.map((type) => (
-                  <option>{type}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              面经公司
-              <select id="company" name="company">
-                <option value="">{companies.length ? '全部公司' : '暂无已核实公司来源'}</option>
-                {companies.map((company) => (
-                  <option>{company}</option>
-                ))}
-              </select>
-            </label>
-            <p class="muted">公司类型代表岗位适用性；具体公司仅来自有出处的公开面经。</p>
-          </div>
-        </details>
         <button type="reset" class="reset-button">
           清除筛选
         </button>
@@ -172,7 +136,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
       {topics.length} 篇已发布专题，{topics.reduce((n, t) => n + t.data.questions.length, 0)}{' '}
       道分层练习。
       <br />
-      <span class="muted">先建立质量标准，再扩展知识体系。所有题目明确标注来源。</span>
+      <span class="muted">专题包含原理讲解、可运行示例和参考答案。</span>
     </p>
     <a href={`${base}/roadmap/`}>查看后续计划 ↗</a>
   </div>

@@ -1,12 +1,14 @@
 ---
 import { readFileSync } from 'node:fs';
+import { Code } from 'astro:components';
 interface Props {
   id: string;
+  title: string;
   file: string;
   exercise: string;
   platform: string;
 }
-const { id, file, exercise, platform } = Astro.props;
+const { id, title, file, exercise, platform } = Astro.props;
 const source = readFileSync(file, 'utf8');
 ---
 
@@ -14,42 +16,100 @@ const source = readFileSync(file, 'utf8');
   <p class="eyebrow">
     CODE LAB <span>/ C++20</span>
   </p>
-  <h2 id="code-lab-title">动手验证，再改变一个条件</h2>
+  <h2 id="code-lab-title">代码实验</h2>
   <p>{exercise}</p>
-  <p class="muted">
-    {platform === 'linux'
-      ? '需要 Linux 系统调用；在线沙箱可能不支持，请用 Linux / WSL 作为本地替代。'
-      : '示例包含正确性断言。在线机器的计时不能用作性能基准。'}
-  </p>
-  <label for="code-editor">
-    C++ 编辑器 <span class="muted">· 自动保存到此浏览器</span>
-  </label>
-  <textarea
-    id="code-editor"
-    rows="20"
-    spellcheck="false"
-    autocomplete="off"
-    maxlength="100000"
-  >{source}</textarea>
-  <details>
-    <summary>原始示例（用于对照）</summary>
-    <pre id="original-code">{source}</pre>
-  </details>
-  <div class="code-actions">
-    <button class="primary-button" type="button" id="run-code">
-      发送到 Compiler Explorer 并运行
-    </button>
-    <button type="button" id="copy-code">
-      复制代码
-    </button>
-    <a href="https://godbolt.org/" target="_blank" rel="noreferrer">
-      打开 Compiler Explorer ↗
-    </a>
-  </div>
-  <p class="source-note">
-    点击运行会将当前代码发送到 godbolt.org。编译参数：-std=c++20 -O2 -Wall -Wextra
-    -pthread；远程服务可能限流。也可复制代码到本地编译。
-  </p>
-  <pre id="code-output" aria-live="polite">尚未运行。修改代码后点击运行，结果显示在这里。</pre>
+  <a class="primary-button" href="#code-lab" data-open-lab>
+    打开 CodeLAB ↗
+  </a>
+  <noscript>
+    <p>启用 JavaScript 后可打开编辑器；示例代码可在上方正文中阅读和复制。</p>
+  </noscript>
+  <dialog class="lab-dialog" aria-labelledby="lab-topic-title">
+    <header class="lab-header">
+      <div class="lab-heading">
+        <span class="lab-mark">
+          C++ <span>/ CODE LAB</span>
+        </span>
+        <h2 id="lab-topic-title">{title}</h2>
+      </div>
+      <button type="button" id="close-lab" autofocus>
+        返回文章 <span aria-hidden="true">↙</span>
+      </button>
+    </header>
+    <div class="lab-workspace">
+      <aside class="lab-instructions" aria-label="实验说明">
+        <div class="lab-pane-title">
+          实验说明 <span>C++20</span>
+        </div>
+        <div class="lab-instructions-body">
+          <p class="eyebrow">练习目标</p>
+          <h3>{title}</h3>
+          <p>{exercise}</p>
+          <h4>运行说明</h4>
+          <p>
+            {platform === 'linux'
+              ? '示例需要 Linux 系统调用。在线沙箱受限时，可复制到 Linux / WSL 运行。'
+              : '示例包含正确性断言，可先运行原始代码，再修改并核对输出。'}
+          </p>
+          <p>在线机器的计时不适合作为性能基准。</p>
+          <details class="lab-original">
+            <summary>原始示例</summary>
+            <Code code={source} lang="cpp" theme="github-dark" />
+          </details>
+          <p class="source-note">
+            Ctrl / ⌘ + F 查找 · Ctrl / ⌘ + Enter 运行。Tab 用于缩进；Ctrl + M 切换 Tab 的焦点导航。
+          </p>
+        </div>
+      </aside>
+      <div
+        class="lab-divider"
+        role="separator"
+        aria-label="调整说明与编辑器宽度"
+        aria-orientation="vertical"
+        aria-valuemin="25"
+        aria-valuemax="65"
+        aria-valuenow="38"
+        tabindex="0"
+      ></div>
+      <section class="lab-coding" aria-label="代码编辑与运行">
+        <div class="lab-pane-title">
+          <span>{id}.cpp</span>
+          <span id="code-save-status" role="status">
+            自动保存到此浏览器
+          </span>
+        </div>
+        <div class="lab-editor-area">
+          <div id="monaco-editor" hidden></div>
+          <textarea
+            id="code-editor"
+            aria-label="C++ 代码编辑器"
+            spellcheck="false"
+            autocomplete="off"
+            maxlength="100000"
+          >{source}</textarea>
+        </div>
+        <div class="lab-toolbar">
+          <button class="primary-button" type="button" id="run-code">
+            运行代码
+          </button>
+          <button type="button" id="copy-code">
+            复制代码
+          </button>
+          <a href="https://godbolt.org/" target="_blank" rel="noreferrer">
+            Compiler Explorer ↗
+          </a>
+        </div>
+        <section class="lab-results" aria-label="运行结果">
+          <div class="lab-pane-title">
+            运行结果 <span>GCC 13.2 · C++20</span>
+          </div>
+          <pre id="code-output" aria-live="polite">尚未运行。点击运行代码查看输出。</pre>
+        </section>
+        <p class="lab-service-note">
+          运行会将代码发送到 godbolt.org。参数：-std=c++20 -O2 -Wall -Wextra -pthread。
+        </p>
+      </section>
+    </div>
+  </dialog>
   <script src="../scripts/code-lab.ts"></script>
 </section>

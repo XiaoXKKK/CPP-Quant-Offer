@@ -24,10 +24,6 @@ const { questions } = Astro.props;
         .map((q) => (
           <article class="question" id={q.id}>
             <h4>{q.prompt}</h4>
-            <p class="source-label">
-              {q.source.kind === 'derived' ? '岗位知识推导 · 非公司真题' : '公开面经'}
-              {q.companies.length > 0 && ` · ${q.companies.join(' / ')}`}
-            </p>
             <label class="draft-label" for={`draft-${q.id}`}>
               我的回答
             </label>

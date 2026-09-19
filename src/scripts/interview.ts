@@ -21,16 +21,12 @@ type Question = {
 type Topic = {
   id: string;
   title: string;
-  roles: string[];
-  companyTypes: string[];
   questions: Question[];
 };
 const topics: Topic[] = JSON.parse(document.querySelector('#interview-data')!.textContent!);
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const topicFilter = el<HTMLSelectElement>('interview-topic');
 const levelFilter = el<HTMLSelectElement>('interview-level');
-const roleFilter = el<HTMLSelectElement>('interview-role');
-const companyFilter = el<HTMLSelectElement>('interview-company-type');
 const card = el('interview-card');
 const draft = el<HTMLTextAreaElement>('interview-draft');
 const next = el<HTMLButtonElement>('next-question');
@@ -74,7 +70,8 @@ function display() {
       a,
       ` · 公开面经 · 访问 ${current.source.accessed} · 发布 ${current.source.published || '未知'} · 面试 ${current.source.interviewDate || '未知'} · ${current.source.note}`,
     );
-  } else source.textContent = '来源：岗位知识推导 · 非公司真题';
+  }
+  source.hidden = !source.hasChildNodes();
   el('interview-status').textContent = `第 ${position + 1} / ${deck.length} 题 · 本轮不重复`;
   next.disabled = false;
   next.textContent = position === deck.length - 1 ? '完成本轮 ✓' : '下一题 →';
@@ -83,12 +80,7 @@ function display() {
 el('start-interview').addEventListener('click', () => {
   deck = shuffle(
     topics
-      .filter(
-        (t) =>
-          (!topicFilter.value || t.id === topicFilter.value) &&
-          (!roleFilter.value || t.roles.includes(roleFilter.value)) &&
-          (!companyFilter.value || t.companyTypes.includes(companyFilter.value)),
-      )
+      .filter((t) => !topicFilter.value || t.id === topicFilter.value)
       .flatMap((t) =>
         t.questions
           .filter((q) => !levelFilter.value || q.level === levelFilter.value)
@@ -115,7 +107,7 @@ draft.addEventListener('input', () => {
     saveProgress(progress);
   }
 });
-for (const field of [topicFilter, levelFilter, roleFilter, companyFilter])
+for (const field of [topicFilter, levelFilter])
   field.addEventListener('change', () => {
     deck = [];
     current = undefined;

@@ -3,7 +3,7 @@ import { loadProgress } from './progress';
 const form = document.querySelector<HTMLFormElement>('#search-form')!;
 const topics = JSON.parse(document.querySelector('#search-data')!.textContent!);
 const query = document.querySelector<HTMLInputElement>('#search')!;
-const fields = ['category', 'tag', 'level', 'role', 'companyType', 'company', 'status'];
+const fields = ['category', 'tag', 'level', 'status'];
 function restore() {
   const params = new URLSearchParams(location.search);
   query.value = params.get('q') || '';

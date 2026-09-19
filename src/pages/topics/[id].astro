@@ -67,13 +67,14 @@ const all = await publishedTopics();
       </section>
       <CodeLab
         id={data.id}
+        title={data.title}
         file={data.demo.file}
         exercise={data.demo.exercise}
         platform={data.demo.platform}
       />
       <section class="references" id="references">
         <h2>参考资料与适用边界</h2>
-        <p>题库来源单独记录；下列资料用于技术论据，不代表公司面经。在线标准草案和实现会更新。</p>
+        <p>下列资料用于核对技术结论。在线标准草案和实现会更新。</p>
         <ol>
           {data.references.map((ref) => (
             <li>

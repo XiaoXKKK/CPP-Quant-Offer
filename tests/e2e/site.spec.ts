@@ -127,18 +127,24 @@ test('code lab displays remote output and gracefully handles outage', async ({ p
       },
     }),
   );
-  await page.goto('./topics/shared-mutex/');
+  await page.goto('./topics/shared-mutex/#code-lab');
+  await expect(page.locator('.monaco-editor')).toBeVisible();
   await page.locator('#run-code').click();
   await expect(page.locator('#code-output')).toContainText('demo passed');
   await expect(page.locator('#code-output')).toContainText('运行退出码：7');
   await page.unrouteAll();
   await page.route('https://godbolt.org/api/compiler/g132/compile', (route) => route.abort());
-  await page.locator('#code-editor').fill('int main() { return 0; }');
-  await page.locator('#run-code').click();
+  const input = page.locator('.monaco-editor [role="textbox"]').first();
+  await input.focus();
+  await page.keyboard.press('ControlOrMeta+A');
+  await page.keyboard.insertText('int main() { return 0; }');
+  await page.keyboard.press('ControlOrMeta+Enter');
   await expect(page.locator('#code-output')).toContainText('代码已保留');
   await expect(page.locator('#run-code')).toBeEnabled();
   await page.reload();
-  await expect(page.locator('#code-editor')).toHaveValue('int main() { return 0; }');
+  await expect(page.locator('.monaco-editor .view-lines')).toContainText(
+    'int main() { return 0; }',
+  );
 });
 test('responsive layout has no page overflow and navigation works', async ({ page }, testInfo) => {
   for (const route of ['./', './topics/order-book/', './roadmap/', './interview/']) {
@@ -169,4 +175,60 @@ test('storage failures preserve usability and imports reject malformed data', as
     buffer: Buffer.from('{"version":2}'),
   });
   await expect(page.locator('#global-status')).toContainText('导入失败');
+});
+
+test('CodeLAB opens a full viewport workspace, resizes and returns to the article', async ({
+  page,
+}, testInfo) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.goto('./topics/cpp-memory-model/');
+  await page.getByRole('link', { name: '代码实验 ↓', exact: true }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(page.locator('.monaco-editor .view-lines')).toContainText('#include');
+  await expect(page.locator('#code-editor')).toBeHidden();
+  const size = await dialog.boundingBox();
+  expect(size!.width).toBe(page.viewportSize()!.width);
+  expect(size!.height).toBe(page.viewportSize()!.height);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+    true,
+  );
+  const colors = await page
+    .locator('.monaco-editor .view-lines span span')
+    .evaluateAll((spans) => [...new Set(spans.map((span) => getComputedStyle(span).color))]);
+  expect(colors.length).toBeGreaterThan(2);
+  const input = page.locator('.monaco-editor [role="textbox"]').first();
+  await input.focus();
+  await page.keyboard.press('ControlOrMeta+f');
+  await expect(page.getByRole('textbox', { name: 'Find', exact: true })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Control+m');
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#run-code')).toBeFocused();
+  if (testInfo.project.name === 'desktop') {
+    const divider = page.getByRole('separator');
+    await divider.focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(divider).toHaveAttribute('aria-valuenow', '40');
+    const left = await page.locator('.lab-instructions').boundingBox();
+    const right = await page.locator('.lab-coding').boundingBox();
+    expect(right!.x).toBeGreaterThan(left!.x + left!.width);
+  }
+  await page.getByRole('button', { name: '返回文章' }).click();
+  await expect(dialog).not.toBeVisible();
+  await page.getByRole('link', { name: '代码实验 ↓', exact: true }).click();
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+test('CodeLAB preserves editing when Monaco cannot load', async ({ page }) => {
+  await page.route('**/monaco.*.js', (route) => route.abort());
+  await page.goto('./topics/order-book/#code-lab');
+  await expect(page.locator('#code-save-status')).toContainText('高亮加载失败');
+  await page.locator('#code-editor').fill('int main() { return 1; }');
+  await page.reload();
+  await expect(page.locator('#code-editor')).toHaveValue('int main() { return 1; }');
 });

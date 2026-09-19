@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { publishedTopics, safeJson } from '../lib/content';
-import { roles, companyTypes } from '../data/taxonomy.mjs';
 const topics = await publishedTopics();
 ---
 
@@ -34,28 +33,8 @@ const topics = await publishedTopics();
         <option>L3</option>
       </select>
     </label>
-    <label>
-      岗位
-      <select id="interview-role">
-        <option value="">全部岗位</option>
-        {roles.map((r) => (
-          <option>{r}</option>
-        ))}
-      </select>
-    </label>
-    <label>
-      公司类型
-      <select id="interview-company-type">
-        <option value="">全部类型</option>
-        {companyTypes.map((c) => (
-          <option>{c}</option>
-        ))}
-      </select>
-    </label>
   </div>
-  <p class="source-note">
-    本轮题库为岗位知识推导题，不是已核实的公司真题。切换筛选会重置本轮，已写草稿保留。
-  </p>
+  <p class="source-note">切换筛选会重置本轮，已写草稿保留。</p>
   <div class="interview-toolbar">
     <button class="primary-button" id="start-interview">
       开始 / 重新抽题

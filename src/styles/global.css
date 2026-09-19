@@ -274,26 +274,8 @@ strong {
   align-self: center;
   color: #7b8c83;
 }
-.sidebar-note {
-  margin: 43px 10px 30px;
-  font-size: 0.8rem;
-}
-.sidebar-note strong {
-  font-size: 0.86rem;
-}
-.sidebar-note p {
-  color: var(--muted);
-  margin-top: 9px;
-  line-height: 1.9;
-}
-.note-rule {
-  display: block;
-  width: 25px;
-  height: 2px;
-  background: var(--green);
-  margin-bottom: 16px;
-}
 .storage-tools {
+  margin-top: 32px;
   padding: 0 10px;
   font-size: 0.75rem;
   color: var(--muted);
@@ -408,8 +390,7 @@ strong {
   align-items: end;
   margin-top: 18px;
 }
-.filters > label,
-.more-filters label {
+.filters > label {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -428,33 +409,6 @@ strong {
   padding: 8px 3px;
   color: var(--muted);
   margin-left: auto;
-}
-.more-filters {
-  position: relative;
-  font-size: 0.82rem;
-  padding: 7px 4px;
-}
-.more-filters > summary {
-  cursor: pointer;
-  color: var(--green);
-}
-.more-filters > div {
-  position: absolute;
-  z-index: 5;
-  right: 0;
-  top: 42px;
-  width: 310px;
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  box-shadow: 0 12px 24px #14282015;
-  padding: 20px;
-  display: grid;
-  gap: 15px;
-}
-.more-filters p {
-  font-size: 0.76rem;
-  margin: 0;
 }
 .list-meta {
   display: flex;
@@ -815,11 +769,6 @@ strong {
   line-height: 1.8;
   margin-bottom: 6px;
 }
-.source-label {
-  color: var(--muted);
-  font-size: 0.72rem;
-  margin-bottom: 14px;
-}
 .draft-label {
   display: block;
   margin-bottom: 7px;
@@ -871,40 +820,227 @@ strong {
 .code-lab > p {
   font-size: 0.91rem;
 }
-.code-lab label {
-  display: block;
-  margin-bottom: 10px;
+body.lab-open {
+  overflow: hidden;
 }
-.code-lab textarea {
-  font: 0.8rem/1.7 var(--mono);
-  white-space: pre;
-  overflow: auto;
-  background: #18241f;
-  color: #e5eee8;
-  tab-size: 4;
-  border-color: #30463a;
-  min-height: 350px;
+html.lab-open {
+  scroll-behavior: auto;
 }
-.code-lab details {
-  margin: 12px 0;
-  font-size: 0.8rem;
+.lab-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  background: var(--canvas);
 }
-.code-lab pre {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  background: #18241f;
-  color: #d7e8de;
-  border-radius: 4px;
-  padding: 17px;
-  font: 0.78rem/1.8 var(--mono);
+.lab-dialog[open] {
+  display: flex;
+  flex-direction: column;
 }
-.code-actions {
+.lab-header {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--line);
+  background: white;
+}
+.lab-heading {
+  min-width: 0;
+}
+.lab-mark {
+  color: var(--green);
+  font: 600 0.9rem var(--mono);
+}
+.lab-mark span {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.lab-header h2 {
+  margin: 4px 0 0;
+  font-size: 1rem;
+}
+.lab-header button {
+  flex-shrink: 0;
+}
+.lab-workspace {
+  --lab-left: 38%;
+  display: grid;
+  grid-template-columns: minmax(0, var(--lab-left)) 6px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+.lab-instructions {
+  overflow: auto;
+  background: white;
+}
+.lab-pane-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 43px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--line);
+  font: 500 0.8rem var(--mono);
+  background: var(--canvas);
+}
+.lab-pane-title > span:last-child {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.lab-instructions-body {
+  padding: 28px;
+  font-size: 0.9rem;
+}
+.lab-instructions-body h3 {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+.lab-instructions-body h4 {
+  margin-top: 28px;
+  margin-bottom: 10px;
+}
+.lab-original {
+  margin: 28px 0;
+}
+.lab-original summary {
+  cursor: pointer;
+  color: var(--green);
+}
+.lab-original pre {
+  overflow: auto;
+  padding: 16px;
+  font-size: 0.76rem;
+}
+.lab-divider {
+  background: var(--line);
+  cursor: col-resize;
+  touch-action: none;
+}
+.lab-divider:hover,
+.lab-divider:focus-visible {
+  background: #6a9c88;
+}
+.lab-coding {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: #1e1e1e;
+}
+.lab-editor-area {
+  position: relative;
+  flex: 1;
+  min-height: 150px;
+}
+#monaco-editor {
+  position: absolute;
+  inset: 0;
+}
+#code-editor {
+  height: 100%;
+  min-height: 150px;
+  border: 0;
+  border-radius: 0;
+  resize: none;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font: 14px/23px var(--mono);
+  white-space: pre;
+  tab-size: 4;
+}
+/* Keep site form styles out of Monaco's hidden input and search widgets. */
+#monaco-editor textarea {
+  min-height: 0;
+  padding: 0;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+}
+#monaco-editor textarea:focus-visible,
+#monaco-editor input:focus-visible {
+  outline: none;
+}
+#monaco-editor .monaco-editor .inputarea {
+  background: transparent;
+}
+.lab-toolbar {
+  display: flex;
   gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: white;
+  border-bottom: 1px solid var(--line);
   font-size: 0.78rem;
-  margin: 18px 0;
+}
+.lab-results {
+  height: 24%;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+}
+#code-output {
+  margin: 0;
+  padding: 14px 18px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  flex: 1;
+  color: #d4d4d4;
+  font: 0.8rem/1.7 var(--mono);
+}
+.lab-service-note {
+  margin: 0;
+  padding: 6px 18px;
+  color: #b6c2bc;
+  font-size: 0.68rem;
+}
+@media (max-width: 760px) {
+  .lab-header {
+    padding: 12px;
+    gap: 10px;
+  }
+  .lab-header h2 {
+    font-size: 0.85rem;
+  }
+  .lab-workspace {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .lab-divider {
+    display: none;
+  }
+  .lab-instructions {
+    flex: 0 0 28%;
+    min-height: 130px;
+  }
+  .lab-instructions-body {
+    padding: 18px;
+  }
+  .lab-coding {
+    flex: 1 0 68%;
+    min-height: 440px;
+  }
+  .lab-toolbar {
+    gap: 6px;
+    padding: 8px;
+  }
+  .lab-toolbar button {
+    padding: 7px 10px;
+  }
+  .lab-pane-title {
+    padding: 10px 12px;
+  }
 }
 .primary-button {
   background: var(--green);
@@ -1191,14 +1327,6 @@ strong {
   }
   .filters select {
     width: 100%;
-  }
-  .more-filters {
-    padding-left: 0;
-  }
-  .more-filters > div {
-    left: 0;
-    right: auto;
-    width: min(310px, calc(100vw - 48px));
   }
   .topic-row {
     grid-template-columns: 24px minmax(0, 1fr);
