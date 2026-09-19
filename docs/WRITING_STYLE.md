@@ -33,14 +33,3 @@
 ## 编辑流程
 
 先标出原文的结论、证据和限定条件，再修改表达。通读相邻段落，检查是否反复使用同一种开头或结尾。最后逐项核对事实、代码、引用、链接和 frontmatter。修改专题正文后，按贡献指南完成内容复核，再更新审查 hash。
-
-## 来源与适用范围
-
-核对日期：2026-09-19。
-
-- [blader/humanizer](https://github.com/blader/humanizer)：原始项目。本次审阅 [SKILL.md 3.0.0](https://github.com/blader/humanizer/blob/9862685f575c65a8247f90369951df1b3416e3d6/SKILL.md)，固定提交便于复核。重点参考机械对照、重复收尾、强凑排比、夸大评价与编辑前后信息核对的方法。
-- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)：WikiProject AI Cleanup 的经验建议页。该页明确说明其并非 Wikipedia 政策，部分现象只适用于维基百科；单个特征不能证明文本由 AI 生成。
-
-规则依据以上两处原始来源。中文例句、C++ 技术限定、页面文案与审查流程属于本项目适配，效果以实际文章复核为准。Star 数可以辅助了解使用情况，不能证明写作效果；本项目也没有 GPT-6 专项对照评测。
-
-更新规则时先检查上游变更及其理由，尤其注意误判提醒和已撤回的判断。保留本项目必要的技术条件，并更新这里的审阅版本。
