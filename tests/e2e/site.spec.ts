@@ -1,5 +1,23 @@
 import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { readTopics } from '../../scripts/content.mjs';
+
+type TopicMetadata = {
+  data: { id: string; status: 'draft' | 'published'; difficulty: 'L1' | 'L2' | 'L3' };
+};
+type SearchTopic = {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  body: string;
+  tags: string[];
+  roles: string[];
+  companyTypes: string[];
+  questions: { prompt: string; answer: string; companies: string[] }[];
+};
+const sourceTopics: TopicMetadata[] = readTopics();
+const publishedTopics = sourceTopics.filter((topic) => topic.data.status === 'published');
 
 test('backup export and import merge state and preserve local drafts', async ({ page }) => {
   await page.goto('./');
@@ -51,20 +69,66 @@ test('library supports full text, combined filters, empty state and URL restore'
   page,
 }) => {
   await page.goto('./');
-  await expect(page.locator('.topic-row')).toHaveCount(5);
-  await page.getByRole('searchbox').fill('coordinated omission');
-  await expect(page.locator('.topic-row:visible')).toHaveCount(1);
-  await expect(page.locator('.topic-row:visible')).toContainText('epoll');
+  await expect(page.locator('.topic-row')).toHaveCount(publishedTopics.length);
+  const searchIndex: SearchTopic[] = JSON.parse(
+    (await page.locator('#search-data').textContent())!,
+  );
+  const expectedMatches = (query: string, category = '') =>
+    searchIndex
+      .filter(
+        (topic) =>
+          [
+            topic.title,
+            topic.description,
+            topic.body,
+            ...topic.tags,
+            ...topic.roles,
+            ...topic.companyTypes,
+            ...topic.questions.flatMap((question) => [
+              question.prompt,
+              question.answer,
+              ...question.companies,
+            ]),
+          ]
+            .join(' ')
+            .toLowerCase()
+            .includes(query.toLowerCase()) &&
+          (!category || topic.category === category),
+      )
+      .map((topic) => topic.id)
+      .sort();
+  const expectVisibleTopics = async (expected: string[]) => {
+    await expect
+      .poll(() =>
+        page
+          .locator('.topic-row:visible')
+          .evaluateAll((rows) => rows.map((row) => row.getAttribute('data-topic-row')!).sort()),
+      )
+      .toEqual(expected);
+    await expect(page.locator('#empty-state')).toBeVisible({ visible: expected.length === 0 });
+  };
+  expect(expectedMatches('EPOLLONESHOT')).toContain('epoll-lt-et');
+  await page.getByRole('searchbox').fill('EPOLLONESHOT');
+  await expectVisibleTopics(expectedMatches('EPOLLONESHOT'));
   await page.reload();
-  await expect(page.getByRole('searchbox')).toHaveValue('coordinated omission');
+  await expect(page.getByRole('searchbox')).toHaveValue('EPOLLONESHOT');
   await page.locator('#category').selectOption('concurrency');
-  await expect(page.locator('#empty-state')).toBeVisible();
+  await expectVisibleTopics(expectedMatches('EPOLLONESHOT', 'concurrency'));
   await page.getByRole('button', { name: '清除筛选' }).click();
-  await expect(page.locator('.topic-row:visible')).toHaveCount(5);
+  await expect(page.locator('.topic-row:visible')).toHaveCount(publishedTopics.length);
+  expect(expectedMatches('epoll_create1')).toContain('epoll-lt-et');
   await page.getByRole('searchbox').fill('epoll_create1');
-  await expect(page.locator('.topic-row:visible')).toHaveCount(1);
+  await expectVisibleTopics(expectedMatches('epoll_create1'));
   await page.getByRole('button', { name: '清除筛选' }).click();
   await page.locator('#level').selectOption('L1');
+  const levelOneTopics = publishedTopics.filter((topic) => topic.data.difficulty === 'L1');
+  await expect(page.locator('.topic-row:visible')).toHaveCount(levelOneTopics.length);
+  for (const topic of levelOneTopics) {
+    await expect(page.locator(`[data-topic-row="${topic.data.id}"]`)).toBeVisible();
+  }
+  await expect(page.locator('#empty-state')).toBeVisible({ visible: levelOneTopics.length === 0 });
+  await page.getByRole('button', { name: '清除筛选' }).click();
+  await page.getByRole('searchbox').fill('missing-topic-e2e-7fa1d4');
   await expect(page.locator('#empty-state')).toBeVisible();
 });
 test('read and saved state survive refresh; filters reflect state', async ({ page }) => {

@@ -17,8 +17,8 @@
     ],
   'companyTypes': ['高频交易', '量化私募', 'Trading Firm'],
   'status': 'published',
-  'updated': '2026-09-18',
-  'reviewed': '2026-09-18',
+  'updated': '2026-09-19',
+  'reviewed': '2026-09-19',
   'standard': 'C++20',
   'estimatedMinutes': 35,
   'prerequisites': ['RAII 与 unique_lock', '数据竞争', '临界区与对象生命周期'],
@@ -48,6 +48,24 @@
         'url': 'https://raw.githubusercontent.com/gcc-mirror/gcc/releases/gcc-13.2.0/libstdc++-v3/include/std/shared_mutex',
         'kind': 'implementation',
         'accessed': '2026-09-18',
+      },
+      {
+        'title': 'C++20 draft N4861: associative container invalidation',
+        'url': 'https://timsong-cpp.github.io/cppwp/n4861/associative.reqmts',
+        'kind': 'standard',
+        'accessed': '2026-09-19',
+      },
+      {
+        'title': 'C++20 draft N4861: unordered container rehash and invalidation',
+        'url': 'https://timsong-cpp.github.io/cppwp/n4861/unord.req',
+        'kind': 'standard',
+        'accessed': '2026-09-19',
+      },
+      {
+        'title': 'C++20 draft N4861: data races',
+        'url': 'https://timsong-cpp.github.io/cppwp/n4861/intro.races',
+        'kind': 'standard',
+        'accessed': '2026-09-19',
       },
     ],
   'questions':
@@ -272,7 +290,9 @@ shared_mutex 不提供递归所有权。不要在持有同一把共享锁时再�
 
 版本检查模式把“读到的状态”与“准备提交的修改”联系起来。线程先取快照，再获得独占锁；若版本改变，放弃或重算。如果只解锁后再上写锁而不重验，就可能覆盖其他写者的新值。它不是原子升级，而是乐观读、受锁保护的条件提交。
 
-如果返回指向 map 元素的引用，锁对象销毁后另一个线程可 erase 或 rehash，使调用者访问失效。demo 在锁内复制两个字段，解锁后使用值；大对象可研究不可变快照与 shared_ptr，但不能忽略引用计数和回收代价。
+返回容器元素引用时，需要区分引用与迭代器的失效条件。`std::map` 没有 `rehash`；`std::unordered_map::rehash` 会使该容器的迭代器失效，但不会使元素引用或指针失效。两种容器删除对应元素后，指向该元素的引用都会失效，见 [关联容器要求](https://timsong-cpp.github.io/cppwp/n4861/associative.reqmts) 与 [无序容器要求](https://timsong-cpp.github.io/cppwp/n4861/unord.req)。
+
+引用仍有效也不代表解锁后可以任意访问：另一个线程可能删除该元素，或与调用者发生未同步的冲突读写，后者可能构成 [data race](https://timsong-cpp.github.io/cppwp/n4861/intro.races)。demo 在锁内复制两个字段，解锁后使用独立的值；大对象可研究不可变快照与 shared_ptr，但不能忽略引用计数和回收代价。
 
 ## 数据结构/系统内部实现
 
